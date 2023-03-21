@@ -1,0 +1,71 @@
+plugins {
+    id 'org.springframework.boot' version '2.7.9'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id 'java'
+    id 'groovy'
+    id 'com.github.ben-manes.versions' version '0.44.0'
+}
+
+group = 'no.fintlabs'
+version = '0-SNAPSHOT'
+sourceCompatibility = '17'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+jar {
+    enabled = false
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    repositories {
+        maven {
+            url "https://repo.fintlabs.no/releases"
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.86.Final:osx-aarch_64'
+
+    implementation 'no.fintlabs:fint-resource-server-security:1.1.1-rc-1'
+    implementation 'org.springframework.security:spring-security-config'
+
+    implementation 'no.fintlabs:fint-kafka:2.4.0'
+    implementation "no.fint:fint-DOMAIN-resource-model-java:${apiVersion}"
+    implementation 'no.fintlabs:fint-core-cache:0.3.0'
+    implementation 'no.fint:fint-event-model:3.0.1'
+    implementation('no.fint:fint-relations:2.2.1') {
+        exclude group: 'com.github.springfox.loader'
+        exclude group: 'org.springframework.boot'
+    }
+
+    implementation 'no.fintlabs:fint-core-consumer-shared:0.5.1'
+    implementation 'no.fintlabs:fint-antlr:1.1.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+
+    compileOnly 'org.projectlombok:lombok'
+    runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+    testImplementation 'cglib:cglib-nodep:3.3.0'
+    testImplementation 'org.spockframework:spock-spring:2.3-groovy-3.0'
+    testImplementation 'org.spockframework:spock-core:2.3-groovy-3.0'
+}
+
+test {
+    useJUnitPlatform()
+}

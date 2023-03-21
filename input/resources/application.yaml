@@ -1,0 +1,40 @@
+server:
+  port: 8080
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://idp.felleskomponent.no/nidp/oauth/nam
+  webflux:
+    base-path: /DOMAIN/PACKAGE
+  kafka:
+    consumer:
+      group-id: # consumer-DOMAIN-PACKAGE-<your-instance-id>
+
+fint:
+  consumer:
+    org-id:
+  kafka:
+    application-id: consumer-DOMAIN-PACKAGE
+    enable-ssl: true
+    topic:
+      org-id: fintlabs.no
+      domain-context: fint-core
+  relations:
+    default-base-url: https://alpha.felleskomponent.no
+
+logging:
+  level:
+    root: INFO
+    org.apache.kafka: WARN
+    org:
+      springframework:
+        security: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus

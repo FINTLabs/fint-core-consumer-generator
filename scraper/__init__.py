@@ -1,0 +1,2 @@
+from scraper.model_scraper import ModelScraper
+from scraper.information_model_scraper import update_information_model
