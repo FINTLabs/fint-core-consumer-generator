@@ -1,0 +1,4 @@
+*.html linguist-documentation
+*.java linguist-documentation
+*.groovy linguist-documentation
+*.dockerfile linguist-documentation
