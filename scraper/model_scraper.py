@@ -48,11 +48,15 @@ class ModelScraper:
         return main_ids
 
     def __get_xml_root(self, version: str):
-        return Et.fromstring(self.__get_xml_content(version))
+        xml_content = self.__get_xml_content(version)
+        return Et.fromstring(xml_content)
 
     @staticmethod
     def __get_xml_content(version: str):
-        url = f"https://raw.githubusercontent.com/FINTLabs/fint-informasjonsmodell/v{version}/FINT-informasjonsmodell.xml"
+        if version in ["master", "main"]:
+            url = f"https://raw.githubusercontent.com/FINTLabs/fint-informasjonsmodell/{version}/FINT-informasjonsmodell.xml"
+        else:
+            url = f"https://raw.githubusercontent.com/FINTLabs/fint-informasjonsmodell/v{version}/FINT-informasjonsmodell.xml"
         response = requests.get(url)
         if response.status_code == 200:
             return response.content.decode('windows-1252', 'replace')
