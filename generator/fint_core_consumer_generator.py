@@ -5,17 +5,15 @@ import shutil
 
 
 class FintCoreConsumerGenerator:
-    def __init__(self, output_path: str = None):
+    def __init__(self, output_path: str = None, information_model_version: str = "3.13.10"):
         self.component = input("fint-core-consumer-")
         self.domain = self.component.split("-")[0]
         self.package = self.component.split("-")[1]
         self.model_scraper = ModelScraper()
+        self.model_scraper.fetch_models(information_model_version, self.domain, self.package)
         self.file_generator = FileGenerator(self.component)
-        self.models = self.model_scraper.scrape(self.component)
-        if not output_path:
-            self.output_path = f"./output/fint-core-consumer-{self.component}/"
-        else:
-            self.output_path = output_path
+        self.models = self.model_scraper.get_main_models()
+        self.output_path = f"./output/fint-core-consumer-{self.component}/"
 
     def generate_everything(self):
         self.generate_structure()
@@ -45,12 +43,12 @@ class FintCoreConsumerGenerator:
     def generate_model_files(self):
         source_dir = './input/model/'
         for model in self.models:
-            output_dir = self.output_path + f"src/main/java/no/fintlabs/consumer/model/{model.lower()}/"
+            output_dir = self.output_path + f"src/main/java/no/fintlabs/consumer/model/{model.name.lower()}/"
             os.makedirs(output_dir)
             for file in os.listdir(source_dir):
                 self.file_generator.read_file(source_dir + file)
-                self.file_generator.replace_content(model=model)
-                self.file_generator.generate_file(file, output_dir, model=model)
+                self.file_generator.replace_content(model=model.name)
+                self.file_generator.generate_file(file, output_dir, model=model.name)
 
     def generate_rest_endpoint_file(self):
         source_dir = './input/config/'
@@ -61,7 +59,7 @@ class FintCoreConsumerGenerator:
             contents = file.read()
 
         for model in self.models:
-            new_line = f'    public static final String {model.upper()} = "/{model.lower()}";'
+            new_line = f'    public static final String {model.name.upper()} = "/{model.name.lower()}";'
             lines = contents.splitlines()
             for i, line in enumerate(lines):
                 if 'public enum RestEndpoints {' in line:
@@ -81,7 +79,7 @@ class FintCoreConsumerGenerator:
             contents = file.read()
 
         for model in self.models:
-            new_line = f'            .put("no.fint.model.{self.domain}.{self.package}.{model.capitalize()}", "/{self.domain}/{self.package}/{model.lower()}")'
+            new_line = f'            .put("no.fint.model.{self.domain}.{self.package}.{model.name.capitalize()}", "/{self.domain}/{self.package}/{model.name.lower()}")'
             lines = contents.splitlines()
             for i, line in enumerate(lines):
                 if 'return ImmutableMap.<String,String>builder()' in line:
