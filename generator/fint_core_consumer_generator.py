@@ -5,8 +5,8 @@ import shutil
 
 
 class FintCoreConsumerGenerator:
-    def __init__(self, output_path: str = None, information_model_version: str = "3.13.10"):
-        self.component = input("fint-core-consumer-")
+    def __init__(self, component: str, output_path: str = None, information_model_version: str = "3.13.10"):
+        self.component = component
         self.domain = self.component.split("-")[0]
         self.package = self.component.split("-")[1]
         self.model_scraper = ModelScraper()
