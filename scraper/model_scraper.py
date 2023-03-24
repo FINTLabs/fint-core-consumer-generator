@@ -68,8 +68,8 @@ class ModelScraper:
         model_list = []
         for model in package:
             if "uml:Class" in model.attrib.values() and "isAbstract" not in model.attrib.keys():
-                # model.attrib.values()[1] == id (needs to be done for backwards and forwards compatibility)
-                model = Model(model.attrib["name"], model.attrib["{http://schema.omg.org/spec/XMI/2.1}id"])
+                # list(model.attrib.values())[1] == id (needs to be done for backwards and forwards compatibility)
+                model = Model(model.attrib["name"], list(model.attrib.values())[1])
                 model_list.append(model)
         if len(model_list) > 0:
             return model_list
@@ -80,5 +80,5 @@ class ModelScraper:
         for model in models:
             if model.id not in valid_ids:
                 model.deprecated = True
-            model.name = self.translator.translate(model.name)
+            model.name = self.translator.replace(model.name)
             self.models.append(model)
