@@ -1,7 +1,7 @@
 from tools.translator import Translator
 from scraper.model import Model
 import xml.etree.ElementTree as Et
-import requests
+import urllib.request
 
 
 class ModelScraper:
@@ -31,10 +31,9 @@ class ModelScraper:
                     return package
         raise ValueError(f"Package not found: {input_package}")
 
-    @staticmethod
-    def _get_domain(root, input_domain: str):
+    def _get_domain(self, root, input_domain: str):
         for domain in root[1][0][0]:
-            if input_domain.capitalize() in domain.attrib["name"]:
+            if input_domain.capitalize() in self.translator.replace(domain.attrib["name"]):
                 return domain
             continue
         raise ValueError(f"Domain not found: {input_domain}")
@@ -57,11 +56,11 @@ class ModelScraper:
             url = f"https://raw.githubusercontent.com/FINTLabs/fint-informasjonsmodell/{version}/FINT-informasjonsmodell.xml"
         else:
             url = f"https://raw.githubusercontent.com/FINTLabs/fint-informasjonsmodell/v{version}/FINT-informasjonsmodell.xml"
-        response = requests.get(url)
-        if response.status_code == 200:
-            return response.content.decode('windows-1252', 'replace')
+        response = urllib.request.urlopen(url)
+        if response.status == 200:
+            return response.read().decode('windows-1252', 'replace')
         else:
-            raise ValueError(f"Invalid version: {version} got status code: {response.status_code}")
+            raise ValueError(f"Invalid version: {version} got status code: {response.status}")
 
     @staticmethod
     def _get_models_from_package(package):

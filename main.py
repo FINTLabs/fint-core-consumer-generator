@@ -2,14 +2,14 @@ from generator import FintCoreConsumerGenerator
 
 
 def main():
+    component = input("fint-core-consumer-")
     print("Leave blank for latest version")
     version = input("Information model version: ")
     if not version:
         version = "master"
 
-    component = input("fint-core-consumer-")
-    consumer_generator = FintCoreConsumerGenerator(component, information_model_version=version)
-    consumer_generator.generate_everything()
+    consumer_generator = FintCoreConsumerGenerator(component, version)
+    consumer_generator.generate_consumer()
 
 
 if __name__ == "__main__":

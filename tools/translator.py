@@ -9,5 +9,5 @@ class Translator:
                 ord('Å'): 'A'
             }
 
-    def translate(self, string: str):
+    def replace(self, string: str):
         return string.translate(self.translation_table)
