@@ -1,4 +1,3 @@
-from pathlib import Path
 import os
 
 
@@ -30,10 +29,14 @@ class FileGenerator:
 
     def generate_file(self, file_name: str, output_directory: str, model_name: str = None, override=False):
         if model_name:
-            file_name = f"{model_name.capitalize()}{file_name}"
+            file_name = f"{model_name.capitalize()}{file_name.capitalize()}"
 
-        output_file_path = Path(output_directory) / file_name
+        output_file_path = os.path.join(output_directory, file_name)
         if os.path.exists(output_file_path):
-            return Warning(f"Folder already exists: {file_name}")
+            if override:
+                os.remove(output_file_path)
+            else:
+                return Warning(f"File already exists: {file_name} Consider using override")
+
         with open(output_file_path, "w") as output_file:
             output_file.write(self.file_contents)

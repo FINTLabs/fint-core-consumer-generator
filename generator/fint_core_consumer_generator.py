@@ -20,18 +20,14 @@ class FintCoreConsumerGenerator:
         self._model_path = "src/main/java/no/fintlabs/consumer/model/"
         self._config_path = "src/main/java/no/fintlabs/consumer/config/"
 
-    def generate_consumer(self):
+    def generate_consumer(self, override=False):
         self._generate_structure()
         self._generate_base()
-        self._generate_model()
+        self._generate_model(override=override)
         self._generate_rest_endpoint()
         self._generate_link_mapper()
         self._generate_kustomize()
         self._generate_resources()
-
-    def update_consumer_models(self, path_to_consumer: str, override=False):
-        self.output_directory = self._validate_and_set_path(path_to_consumer, self._base_folder_name)
-        self._generate_model(override)
 
     def _delete_existing_models(self):
         existing_model_names = self._get_existing_model_names()
@@ -64,9 +60,6 @@ class FintCoreConsumerGenerator:
             self._file_generator.generate_file(file_name, self.output_directory)
 
     def _generate_model(self, override=False):
-        if override:
-            self._delete_existing_models()
-
         source_dir = './input/model/'
         for model in self._models:
             output_dir = os.path.join(self.output_directory, self._model_path, model.name.lower())
@@ -74,7 +67,7 @@ class FintCoreConsumerGenerator:
             for file_name in os.listdir(source_dir):
                 self._file_generator.read_file(source_dir + file_name)
                 self._file_generator.replace_content(self._component, model.name)
-                self._file_generator.generate_file(file_name, output_dir, model.name)
+                self._file_generator.generate_file(file_name, output_dir, model.name, override=override)
 
     def _generate_rest_endpoint(self):
         source_dir = './input/config/'
@@ -136,23 +129,3 @@ class FintCoreConsumerGenerator:
             self._file_generator.read_file(source_dir + file)
             self._file_generator.replace_content()
             self._file_generator.generate_file(file, output_dir)
-
-    @staticmethod
-    def _validate_and_set_path(path: str, base_folder: str):
-        if os.path.isabs(path):
-            if os.path.isdir(path):
-                if os.path.basename(path) == base_folder:
-                    return path
-                elif os.path.basename(f"{path}/{base_folder}") == base_folder:
-                    return f"{path}/{base_folder}"
-                raise ValueError(f"Invalid absolute path - folder {base_folder} not found")
-            raise ValueError("Invalid absolute path - path does not exist or is not a directory")
-        else:
-            abs_path = os.path.abspath(path)
-            if os.path.isdir(abs_path):
-                if os.path.basename(abs_path) == base_folder:
-                    return abs_path
-                elif os.path.basename(f"{path}/{base_folder}") == base_folder:
-                    return f"{path}/{base_folder}"
-                raise ValueError(f"Invalid relative path - folder {base_folder} not found")
-            raise ValueError("Invalid relative path - path does not exist or is not a directory")
