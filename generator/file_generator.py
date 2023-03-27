@@ -11,9 +11,6 @@ class FileGenerator:
             self.file_contents = file.read()
 
     def replace_content(self, component_name: str = None, model_name: str = None):
-        if not isinstance(self.file_contents, str):
-            return
-
         if component_name:
             domain, package = component_name.split("-")
             self.file_contents = self.file_contents \
