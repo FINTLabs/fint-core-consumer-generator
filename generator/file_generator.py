@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 
 class FileGenerator:
@@ -30,10 +31,12 @@ class FileGenerator:
                 .replace("MODEL_UPPER", model_name.upper()) \
                 .replace("MODEL", model_name.capitalize())
 
-    def generate_file(self, file_name: str, output_directory: str, model_name: str = None):
+    def generate_file(self, file_name: str, output_directory: str, model_name: str = None, override=False):
         if model_name:
             file_name = f"{model_name.capitalize()}{file_name}"
 
         output_file_path = Path(output_directory) / file_name
+        if os.path.exists(output_file_path):
+            return Warning(f"Folder already exists: {file_name}")
         with open(output_file_path, "w") as output_file:
             output_file.write(self.file_contents)
