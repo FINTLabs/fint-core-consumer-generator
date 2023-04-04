@@ -4,7 +4,6 @@ This project generates a Core 2 consumer based on the user's input of domain and
 ## How to generate a consumer
 - Install Python 3 on your machine if you haven't already.
 - Open a terminal or command prompt and navigate to the root directory of the fint-core-consumer-generator project
-- Install the project dependencies by running `pip install -r requirements.txt`
 - Run the main.py script with Python 3 by typing `python3 main.py` into your terminal or command prompt.
 - Follow the prompts to provide the necessary information such as domain, package, and version number.
 - Once the script has completed, the generated consumer will be available in the output folder of the project.
