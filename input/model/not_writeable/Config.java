@@ -13,16 +13,6 @@ public class MODELConfig extends ConsumerConfig<MODEL_RESOURCE> {
     }
 
     @Override
-    protected String domainName() {
-        return "DOMAIN";
-    }
-
-    @Override
-    protected String packageName() {
-        return "PACKAGE";
-    }
-
-    @Override
     protected String resourceName() {
         return "MODEL_LOWER";
     }

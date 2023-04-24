@@ -13,8 +13,8 @@ class FintCoreConsumerGenerator:
 
         self._component = self._translator.replace(component)
         self._domain, self.package = self._component.split("-")
-        self._model_scraper.fetch_models(information_model_version, self._domain, self.package)
-        self._models = self._model_scraper.get_main_models()
+        self._model_scraper.fetch_models(information_model_version, self.package)
+        self._models = self._model_scraper.models
         self._base_folder_name = f"fint-core-consumer-{self._domain.lower()}-{self.package.lower()}"
         self.output_directory = f"./output/{self._base_folder_name}/"
         self._model_path = "src/main/java/no/fintlabs/consumer/model/"
@@ -60,13 +60,16 @@ class FintCoreConsumerGenerator:
             self._file_generator.generate_file(file_name, self.output_directory)
 
     def _generate_model(self, override=False):
-        source_dir = './input/model/'
         for model in self._models:
+            if model.writeable:
+                source_dir = './input/model/writeable/'
+            else:
+                source_dir = './input/model/not_writeable/'
             output_dir = os.path.join(self.output_directory, self._model_path, model.name.lower())
             os.makedirs(output_dir, exist_ok=True)
             for file_name in os.listdir(source_dir):
                 self._file_generator.read_file(source_dir + file_name)
-                self._file_generator.replace_content(self._component, model.name)
+                self._file_generator.replace_content(self._component, model)
                 self._file_generator.generate_file(file_name, output_dir, model.name, override=override)
 
     def _generate_rest_endpoint(self):

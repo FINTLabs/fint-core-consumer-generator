@@ -1,4 +1,5 @@
 import os
+from scraper import Model
 
 
 class FileGenerator:
@@ -9,8 +10,20 @@ class FileGenerator:
         with open(file_path, "r") as file:
             self.file_contents = file.read()
 
-    def replace_content(self, component_name: str = None, model_name: str = None):
-        if component_name:
+    def replace_content(self, component_name: str = None, model: Model = None):
+        if model:
+            self.file_contents = self.file_contents \
+                .replace("MODEL_RESOURCES", f"{model.name.capitalize()}Resources") \
+                .replace("MODEL_RESOURCE", f"{model.name.capitalize()}Resource") \
+                .replace("MODEL_LOWER", model.name.lower()) \
+                .replace("MODEL_UPPER", model.name.upper()) \
+                .replace("MODEL", model.name.capitalize())
+            if model.common:
+                self.file_contents = self.file_contents \
+                    .replace("DOMAIN.", "felles") \
+                    .replace("PACKAGE", "")
+
+        if component_name and not model or component_name and model and model.common is False:
             domain, package = component_name.split("-")
             self.file_contents = self.file_contents \
                 .replace("DOMAIN_CAP", domain.capitalize()) \
@@ -18,14 +31,6 @@ class FileGenerator:
                 .replace("DOMAIN", domain) \
                 .replace("PACKAGE", package) \
                 .replace("COMPONENT", component_name)
-
-        if model_name:
-            self.file_contents = self.file_contents \
-                .replace("MODEL_RESOURCES", f"{model_name.capitalize()}Resources") \
-                .replace("MODEL_RESOURCE", f"{model_name.capitalize()}Resource") \
-                .replace("MODEL_LOWER", model_name.lower()) \
-                .replace("MODEL_UPPER", model_name.upper()) \
-                .replace("MODEL", model_name.capitalize())
 
     def generate_file(self, file_name: str, output_directory: str, model_name: str = None, override=False):
         if model_name:
